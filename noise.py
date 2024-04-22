@@ -1,50 +1,52 @@
-from dataclasses import dataclass
 from math import sin, cos
-from sys import getsizeof
+import random
 
-@dataclass
 class Vector2D:
     x: float
     y: float
 
-'''
- const unsigned w = 8 * sizeof(unsigned);
-    const unsigned s = w / 2; 
-    unsigned a = ix, b = iy;
-    a *= 3284157443;
- 
-    b ^= a << s | a >> w - s;
-    b *= 1911520717;
- 
-    a ^= b << s | b >> w - s;
-    a *= 2048419325;
-    float random = a * (3.14159265 / ~(~0u >> 1)); // in [0, 2*Pi]
-    
-    // Create the vector from the angle
-    vector2 v;
-    v.x = sin(random);
-    v.y = cos(random);
- 
-    return v;
-'''
+def random_vector(ix: int, iy: int) -> Vector2D:
+    seed: int = hash(ix * iy & ix + iy)
 
-def random_gradient(ix: int, iy: int) -> Vector2D:
-    W: int = 8 * getsizeof(float)
-    S: int = W / 2
+    random.seed(seed)
 
-def dot_grid_gradient(ix: int, iy: int, x: float, y: float) -> float:
-    gradient: Vector2D = random_gradient(ix, iy)
+    angle: float = random.randint(0, 6283) / 1000
 
-def perlin_noise(x, y) -> float:
+    # Create the vector from the angle
+    v = Vector2D()
+    v.x = sin(angle)
+    v.y = cos(angle)
 
-    # Grid cell co-ordinates
+    return v
+
+def dot_gradient(ix: int, iy: int, x: float, y: float) -> float:
+    gradient = random_vector(ix, iy)
+
+    dx: float = x - float(ix)
+    dy: float = y - float(iy)
+
+    return dx * gradient.x + dy * gradient.y
+
+def interpolate(a0: float, a1: float, w: float) -> float:
+    return (a1 - a0) * (3.0 - w * 2.0) * w * w + a0
+
+def perlin_noise2D(x: float, y: float) -> float:
     x0: int = int(x)
     y0: int = int(y)
-    y1: int = y0 + 1
     x1: int = x0 + 1
+    y1: int = y0 + 1
 
-    # Interpolation weights
     sx: float = x - float(x0)
     sy: float = y - float(y0)
 
+    n0: float = dot_gradient(x0, y0, x, y)
+    n1: float = dot_gradient(x1, y0, x, y)
+    ix0: float = interpolate(n0, n1, sx)
+
+    n0: float = dot_gradient(x0, y1, x, y)
+    n1: float = dot_gradient(x1, y1, x, y)
+    ix1: float = interpolate(n0, n1, sx)
+
+    value: float = interpolate(ix0, ix1, sy)
     
+    return value
