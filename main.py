@@ -2,9 +2,12 @@ from PIL import Image
 import noise
 from time import time
 from datetime import datetime
+import os
+import rust
 
-now = datetime.now()
-dt_string = now.strftime("%d-%m-%Y %H-%M-%S")
+print(
+  rust
+)
 
 # Image Settings
 IMAGE_WIDTH = 500
@@ -16,11 +19,11 @@ MAP_HEIGHT = 100
 
 # Perlin noise settings
 GRID_SIZE = 40
-OCTAVES = 6
-SEED = 24
+OCTAVES = 5
+SEED = 80085
 
 # Height settings NB: Height goes from -1 to 1
-MAX_OCEAN_HEIGHT = 0
+MAX_OCEAN_HEIGHT = 0 
 MAX_BEACH_HEIGHT = 0.025
 MAX_MEADOW_HEIGHT = 0.5
 MAX_BAREGROUND_HEIGHT = 0.6
@@ -32,6 +35,46 @@ MEADOW_COLOUR = (17, 133, 11)
 SNOWCAP_COLOUR = (243, 247, 205)
 BAREGROUND_COLOUR = (112, 72, 6)
 BEACH_COLOUR = (252, 249, 141)
+
+now = datetime.now()
+dt_string = now.strftime("%d-%m-%Y %H-%M-%S")
+os.mkdir(f".\saves\{dt_string}")
+
+settings = [
+    "Settings:\n",
+    f"Image Height: {IMAGE_HEIGHT}\n",
+    f"Image Width: {IMAGE_WIDTH}\n",
+    f"Map Height: {MAP_HEIGHT}\n",
+    f"Map Width: {MAP_WIDTH}\n",
+    f"Grid Size: {GRID_SIZE}\n",
+    f"Octaves: {OCTAVES}\n",
+    f"Seed: {SEED}\n",
+    f"Max Ocean Height: {MAX_OCEAN_HEIGHT}\n",
+    f"Max Beach Height: {MAX_BEACH_HEIGHT}\n",
+    f"Max Meadow Height: {MAX_MEADOW_HEIGHT}\n"
+    f"Max Bareground Height: {MAX_BAREGROUND_HEIGHT}\n",
+    f"Max Snowcap Height: {MAX_SNOWCAP_HEIGHT}\n",
+    f"Ocean Colour: {OCEAN_COLOUR}\n",
+    f"Meadow Colour: {MEADOW_COLOUR}\n",
+    f"Bareground Colour: {BAREGROUND_COLOUR}\n",
+    f"Snowcap Colour: {SNOWCAP_COLOUR}\n"
+]
+
+# Creation of files
+image = Image.new(
+    "RGB", 
+    (int(IMAGE_WIDTH), int(IMAGE_HEIGHT))
+  )
+
+heightmap = Image.new(
+  "RGB",
+  (int(IMAGE_WIDTH), int(IMAGE_HEIGHT))
+)
+
+with open(f".\saves\{dt_string}\Settings.txt", "x") as f:
+  for setting in settings:
+    f.write(setting)
+  f.close()
 
 def get_colour(val: int):
 
@@ -72,11 +115,6 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
     return rightMin + (valueScaled * rightSpan)
 
 def main() -> None:
-  image = Image.new(
-      "RGB", 
-      (int(IMAGE_WIDTH), int(IMAGE_HEIGHT))
-    )
-  
   for a in range(image.width):
     for b in range(image.height):
 
@@ -88,7 +126,10 @@ def main() -> None:
       amp: float = 1.0
 
       for i in range(int(OCTAVES)):
-        val += noise.perlin_noise2D((x + 30 * SEED) * freq / GRID_SIZE, (y + 30 * SEED) * freq / GRID_SIZE) * amp
+        val += noise.perlin_noise2D(
+          (x + 30 * SEED) * freq / GRID_SIZE, (y + 30 * SEED) * freq / GRID_SIZE
+          ) * amp
+        
         freq *= 2
         amp /= 2
       
@@ -99,33 +140,17 @@ def main() -> None:
       elif val < -1.0:
         val = -1.0
 
+      heightmap_val = int((val + 1) * 125)
       image.putpixel((a, b), get_colour(val))
+      heightmap.putpixel((a, b), (heightmap_val, heightmap_val, heightmap_val))
 
-  image.save(f".\Saves\{dt_string} S{SEED}O{OCTAVES}GS{GRID_SIZE}MW{MAP_WIDTH}MH{MAP_HEIGHT}.png")
+  image.save(f".\saves\{dt_string}\ Map.png")
+  heightmap.save(f".\saves\{dt_string}\ Heightmap.png")
 
 if __name__ == "__main__":
   start = time()
   main()
   end = time()
-
-  # Prints info about the image just produced
   print(
-    f"{end - start} seconds to process, {(end - start) / 60} minutes",
-    "Settings:",
-    f"Image Height: {IMAGE_HEIGHT}",
-    f"Image Width: {IMAGE_WIDTH}",
-    f"Map Height: {MAP_HEIGHT}",
-    f"Map Width: {MAP_WIDTH}",
-    f"Grid Size: {GRID_SIZE}",
-    f"Octaves: {OCTAVES}",
-    f"Seed: {SEED}",
-    f"Max Ocean Height: {MAX_OCEAN_HEIGHT}",
-    f"Max Beach Height: {MAX_BEACH_HEIGHT}",
-    f"Max Meadow Height: {MAX_MEADOW_HEIGHT}"
-    f"Max Bareground Height: {MAX_BAREGROUND_HEIGHT}",
-    f"Max Snowcap Height: {MAX_SNOWCAP_HEIGHT}",
-    f"Ocean Colour: {OCEAN_COLOUR}",
-    f"Meadow Colour: {MEADOW_COLOUR}",
-    f"Bareground Colour: {BAREGROUND_COLOUR}",
-    f"Snowcap Colour: {SNOWCAP_COLOUR}"
+      f"{end - start} seconds to process, {(end - start) / 60} minutes"
   )
