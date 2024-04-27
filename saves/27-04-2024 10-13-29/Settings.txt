@@ -1,0 +1,17 @@
+Settings:
+Image Height: 500
+Image Width: 500
+Map Height: 100
+Map Width: 100
+Grid Size: 40
+Octaves: 12
+Seed: 801
+Max Ocean Height: 0
+Max Beach Height: 0.025
+Max Meadow Height: 0.5
+Max Bareground Height: 0.6
+Max Snowcap Height: 1
+Ocean Colour: (68, 97, 227)
+Meadow Colour: (17, 133, 11)
+Bareground Colour: (112, 72, 6)
+Snowcap Colour: (243, 247, 205)

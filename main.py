@@ -1,14 +1,8 @@
 from PIL import Image
-import noise
 from time import time
 from datetime import datetime
 import os
 import rust
-
-print(
-  rust
-)
-
 # Image Settings
 IMAGE_WIDTH = 500
 IMAGE_HEIGHT = 500
@@ -19,8 +13,8 @@ MAP_HEIGHT = 100
 
 # Perlin noise settings
 GRID_SIZE = 40
-OCTAVES = 5
-SEED = 80085
+OCTAVES = 12
+SEED = 801
 
 # Height settings NB: Height goes from -1 to 1
 MAX_OCEAN_HEIGHT = 0 
@@ -126,7 +120,7 @@ def main() -> None:
       amp: float = 1.0
 
       for i in range(int(OCTAVES)):
-        val += noise.perlin_noise2D(
+        val += rust.perlin_noise(
           (x + 30 * SEED) * freq / GRID_SIZE, (y + 30 * SEED) * freq / GRID_SIZE
           ) * amp
         

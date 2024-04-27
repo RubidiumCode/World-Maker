@@ -30,7 +30,7 @@ def dot_gradient(ix: int, iy: int, x: float, y: float) -> float:
 def interpolate(a0: float, a1: float, w: float) -> float:
     return (a1 - a0) * (3.0 - w * 2.0) * w * w + a0
 
-def perlin_noise2D(x: float, y: float) -> float:
+def perlin_noise(x: float, y: float) -> float:
     x0: int = int(x)
     y0: int = int(y)
     x1: int = x0 + 1
