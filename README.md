@@ -7,10 +7,10 @@ Some basic performance data is shown below. Being rendered is a 500x500 pixel im
 |Python                                                     |68 |132 |260 |
 |Python + Rust                                              |131|279 |532 |
 |Python + Rust + Mapping                                    |900|1800|3600|
-|Python + Memoization (Main)                                |70 |133 |267 |
-|Python + Rust + Memoization (Main)                         |132|276 |554 |
-|Python + Memoization (All)                                 |52 |97  |364 |
-|Python + Rust + Memoization (All python)                   |140|267 |559 |
+|Python + Memoization (Main Function)                       |70 |133 |267 |
+|Python + Rust + Memoization (Main Function)                |132|276 |554 |
+|Python + Memoization (All Functions)                       |52 |97  |364 |
+|Python + Rust + Memoization (All python Functions          |140|267 |559 |
 |Python + Multithreading (20 Threads)                       |41 |84  |258 |
 |Python + Multithreading (50 Threads)                       |46 |87  |289 |
 |Python + Multithreading (20 Threads) + Memoization (All)   |42 |82  |281 |
