@@ -1,11 +1,10 @@
-Settings:
-Image Height: 500
+Settings:Image Height: 500
 Image Width: 500
 Map Height: 100
 Map Width: 100
 Grid Size: 40
-Octaves: 12
-Seed: 801
+Octaves: 5
+Seed: 74238
 Max Ocean Height: 0
 Max Beach Height: 0.025
 Max Meadow Height: 0.5

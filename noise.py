@@ -1,10 +1,24 @@
 from math import sin, cos
 import random
+from functools import wraps
+
+def memoize(func):
+  cache = {}
+
+  @wraps(func)
+  def wrapper(*args, **kwargs):
+    key = str(args) + str(kwargs)
+    if key not in cache:
+      cache[key] = func(*args, **kwargs)
+    return cache[key]
+  return wrapper
+
 
 class Vector2D:
     x: float
     y: float
 
+@memoize
 def random_vector(ix: int, iy: int) -> Vector2D:
     seed: int = hash(ix * iy & ix + iy)
 
@@ -19,6 +33,7 @@ def random_vector(ix: int, iy: int) -> Vector2D:
 
     return v
 
+@memoize
 def dot_gradient(ix: int, iy: int, x: float, y: float) -> float:
     gradient = random_vector(ix, iy)
 
@@ -27,10 +42,13 @@ def dot_gradient(ix: int, iy: int, x: float, y: float) -> float:
 
     return dx * gradient.x + dy * gradient.y
 
+@memoize
 def interpolate(a0: float, a1: float, w: float) -> float:
     return (a1 - a0) * (3.0 - w * 2.0) * w * w + a0
 
+@memoize
 def perlin_noise(x: float, y: float) -> float:
+
     x0: int = int(x)
     y0: int = int(y)
     x1: int = x0 + 1
